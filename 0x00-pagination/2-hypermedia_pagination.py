@@ -2,9 +2,7 @@
 """Module to Implement a get_hyper method."""
 import csv
 import math
-from typing import List, Dict, Union
-index_range = __import__('0-simple_helper_function').index_range
-
+from typing import List, Dict, Union, Tuple
 
 class Server:
     """Server class to paginate a database of popular baby names.
@@ -71,3 +69,18 @@ class Server:
             "prev_page": prev_page,
             "total_pages": total_pages
         }
+
+def index_range(page: int, page_size: int) -> Tuple[int, int]:
+    """
+    Return tuple containing a start index and an end index.
+
+    Args:
+        page (int): The 1-indexed page number.
+        page_size (int): The number of items per page.
+
+    Returns:
+        tuple[int, int]: The start index and end index of the page range.
+    """
+    start = (page - 1) * page_size
+    end = start + page_size
+    return (start, end)
