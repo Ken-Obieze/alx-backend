@@ -7,6 +7,8 @@ and inference of appropriate time zone
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
 import pytz
+from datetime import datetime
+from flask_babel import format_datetime
 
 app = Flask(__name__)
 babel = Babel(app)
@@ -98,8 +100,11 @@ def index():
         welcome_message = gettext('logged_in_as') % {'username': g.user['name']}
     else:
         welcome_message = gettext('not_logged_in')
-    return render_template('7-index.html', welcome_message=welcome_message)
-
+    
+    current_time = datetime.now(pytz.timezone(g.timezone))
+    formatted_time = format_datetime(current_time)
+    
+    return render_template('7-index.html', welcome_message=welcome_message, current_time=formatted_time)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='500
