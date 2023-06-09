@@ -1,8 +1,6 @@
 #!/usr/bin/env python3
 """
-Module for Flask app with Babel setup, locale selection, parametrized templates,
-URL parameter support for locale, mock user login system, user locale priority,
-and inference of appropriate time zone
+Module for Flask app with Babel setup
 """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
@@ -38,7 +36,6 @@ users = {
 def get_user(user_id):
     """
     Get the user dictionary based on the user ID
-    Returns None if the user ID cannot be found or if login_as was not passed
     """
     return users.get(user_id)
 
@@ -46,8 +43,7 @@ def get_user(user_id):
 @babel.localeselector
 def get_locale():
     """
-    Determine the best match for the supported languages based on the user's preferred locale,
-    request's Accept-Language header, or default locale
+    Determine the best match for the supported languages
     """
     locale = request.args.get('locale')
     if locale and locale in app.config['LANGUAGES']:
@@ -60,8 +56,7 @@ def get_locale():
 @babel.timezoneselector
 def get_timezone():
     """
-    Determine the best match for the supported time zones based on the user's preferred time zone,
-    user settings, or default to UTC
+    Determine the best match for the supported time zones
     """
     timezone = request.args.get('timezone')
     if timezone:
@@ -82,8 +77,7 @@ def get_timezone():
 @app.before_request
 def before_request():
     """
-    Executed before all other functions
-    Finds the user if any based on the login_as URL parameter and sets it as a global on flask.g.user
+    Finds the user if any based on the login_as URL parameter
     """
     user_id = request.args.get('login_as')
     if user_id:
@@ -94,7 +88,7 @@ def before_request():
 @app.route('/')
 def index():
     """
-    Renders the index.html template with appropriate welcome message based on the logged-in user
+    Renders the index.html template with appropriate welcome message
     """
     if g.user:
         welcome_message = gettext('logged_in_as') % {'username': g.user['name']}
@@ -104,7 +98,11 @@ def index():
     current_time = datetime.now(pytz.timezone(g.timezone))
     formatted_time = format_datetime(current_time)
     
-    return render_template('7-index.html', welcome_message=welcome_message, current_time=formatted_time)
+    return render_template(
+            '7-index.html',
+            welcome_message=welcome_message,
+            current_time=formatted_time
+            )
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port='500
