@@ -67,7 +67,8 @@ def index():
     Renders the index.html template with appropriately
     """
     if g.user:
-        welcome_message = gettext('logged_in_as') % {'username': g.user['name']}
+        welcome_message = gettext('logged_in_as') % {
+                'username': g.user['name']}
     else:
         welcome_message = gettext('not_logged_in')
     return render_template('6-index.html', welcome_message=welcome_message)
