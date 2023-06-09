@@ -2,25 +2,16 @@
 """
 Module for Flask app
 """
+
 from flask import Flask, render_template, request, g
-from flask_babel import Babel, gettext
+from flask_babel import Babel
 
 app = Flask(__name__)
 babel = Babel(app)
 
-
-class Config:
-    """
-    Config class for Flask app
-    """
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
-
-
-app.config.from_object(Config)
-babel.init_app(app)
-
+app.config['LANGUAGES'] = ['en', 'fr']
+app.config['BABEL_DEFAULT_LOCALE'] = 'en'
+app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -32,7 +23,7 @@ users = {
 
 def get_user(user_id):
     """
-    Get the user dictionary based on the user ID
+    Retrieves a user from the mock user database based on the user ID.
     """
     return users.get(user_id)
 
@@ -40,37 +31,46 @@ def get_user(user_id):
 @babel.localeselector
 def get_locale():
     """
-    Determine the best match for the supported languages
+    Determines the best matching locale for the request.
+    Priority:
+    1. Locale from URL parameters
+    2. Locale from user settings
+    3. Locale from request header
+    4. Default locale
     """
     locale = request.args.get('locale')
-    if locale and locale in app.config['LANGUAGES']:
+    if locale in app.config['LANGUAGES']:
         return locale
-    if g.user and g.user['locale'] in app.config['LANGUAGES']:
-        return g.user['locale']
-    return request.accept_languages.best_match(app.config['LANGUAGES'])
+    user = get_user(g.user_id)
+    if user and user['locale'] in app.config['LANGUAGES']:
+        return user['locale']
+    locale = request.accept_languages.best_match(app.config['LANGUAGES'])
+    if locale:
+        return locale
+    return app.config['BABEL_DEFAULT_LOCALE']
 
 
 @app.before_request
 def before_request():
     """
-    Executed before all other functions
+    Executed before all other functions.
     """
     user_id = request.args.get('login_as')
-    if user_id:
-        user = get_user(int(user_id))
-        g.user = user
+    g.user_id = int(user_id) if user_id else None
+    g.user = get_user(g.user_id)
 
 
 @app.route('/')
 def index():
     """
-    Renders the index.html template with appropriately
+    Renders the index.html template with appropriate welcome message
     """
+    welcome_message = ''
     if g.user:
-        welcome_message = gettext('logged_in_as') % {
-                'username': g.user['name']}
+        welcome_message = f"You are logged in as {g.user['name']}."
     else:
-        welcome_message = gettext('not_logged_in')
+        welcome_message = "You are not logged in."
+
     return render_template('6-index.html', welcome_message=welcome_message)
 
 
