@@ -30,10 +30,10 @@ def get_locale():
 def index():
     """Renders the index.html template with parametrized values."""
     return render_template(
-    '3-index.html',
-    title=gettext('home_title'),
-    header=gettext('home_header')
-)
+        '3-index.html',
+        title=gettext('home_title'),
+        header=gettext('home_header')
+    )
 
 
 if __name__ == '__main__':
