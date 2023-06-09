@@ -1,27 +1,9 @@
 #!/usr/bin/env python3
-"""
-Module for Flask app with Babel setup, locale selection, parametrized templates,
-URL parameter support for locale, and mock user login system
-"""
-from flask import Flask, render_template, request, g
-from flask_babel import Babel, gettext
+"""Module for Flask."""
 
-app = Flask(__name__)
-babel = Babel(app)
-
-
-class Config:
-    """
-    Config class for Flask app
-    """
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
-
-
-app.config.from_object(Config)
-babel.init_app(app)
-
+from flask import Flask, g, render_template, request
+from flask_babel import Babel
+from os import getenv
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
@@ -31,36 +13,51 @@ users = {
 }
 
 
-def get_user(user_id):
-    """
-    Get the user dictionary based on the user ID
-    Returns None if the user ID cannot be found or if login_as was not passed
-    """
-    return users.get(user_id)
+app = Flask(__name__, static_url_path='')
+babel = Babel(app)
+
+
+class Config(object):
+    """configuration for babel"""
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
+
+
+app.config.from_object(Config)
+
+
+@app.route('/', methods=['GET'], strict_slashes=False)
+def index() -> str:
+    """this route renders 0-index.html template"""
+    return render_template('5-index.html')
+
+
+@babel.localeselector
+def get_locale() -> str:
+    """this method checks the URL parameter for locale variable
+    and force the Locale of the app"""
+    if request.args.get('locale'):
+        lang = request.args.get('locale')
+        if lang in app.config['LANGUAGES']:
+            return lang
+    else:
+        return request.accept_languages.best_match(app.config['LANGUAGES'])
+
+
+def get_user():
+    """this function returns a user dictionary or None if the ID
+    cannot be found or if login_as was not passed"""
+    userId = request.args.get('login_as', None)
+    if userId:
+        return users.get(int(userId))
+    return None
 
 
 @app.before_request
 def before_request():
-    """
-    Executed before all other functions
-    Finds the user if any based on the login_as URL parameter and sets it as a global on flask.g.user
-    """
-    user_id = request.args.get('login_as')
-    if user_id:
-        user = get_user(int(user_id))
-        g.user = user
-
-
-@app.route('/')
-def index():
-    """
-    Renders the index.html template with appropriate welcome message based on the logged-in user
-    """
-    if g.user:
-        welcome_message = gettext('logged_in_as') % {'username': g.user['name']}
-    else:
-        welcome_message = gettext('not_logged_in')
-    return render_template('5-index.html', welcome_message=welcome_message)
+    """this function forces this method to be executed before any other"""
+    g.user = get_user()
 
 
 if __name__ == '__main__':
