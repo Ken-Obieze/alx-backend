@@ -3,9 +3,9 @@
 Module for Flask app with Babel, locale selection, and parametrized templates
 """
 from flask import Flask, render_template, request
-from flask_babel import Babel, gettext
+from flask_babel import Babel
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path='')
 babel = Babel(app)
 
 
@@ -26,7 +26,7 @@ def get_locale():
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-@app.route('/')
+@app.route('/', strict_slashes=False)
 def index() -> str:
     """Renders the index.html template with parametrized values."""
     return render_template('3-index.html')
