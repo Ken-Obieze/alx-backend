@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-Module for Flask app with Babel setup, locale selection, parametrized templates,
-URL parameter support for locale, mock user login system, and user locale priority
+Module for Flask app
 """
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
@@ -34,7 +33,6 @@ users = {
 def get_user(user_id):
     """
     Get the user dictionary based on the user ID
-    Returns None if the user ID cannot be found or if login_as was not passed
     """
     return users.get(user_id)
 
@@ -42,8 +40,7 @@ def get_user(user_id):
 @babel.localeselector
 def get_locale():
     """
-    Determine the best match for the supported languages based on the user's preferred locale,
-    request's Accept-Language header, or default locale
+    Determine the best match for the supported languages
     """
     locale = request.args.get('locale')
     if locale and locale in app.config['LANGUAGES']:
@@ -57,7 +54,6 @@ def get_locale():
 def before_request():
     """
     Executed before all other functions
-    Finds the user if any based on the login_as URL parameter and sets it as a global on flask.g.user
     """
     user_id = request.args.get('login_as')
     if user_id:
@@ -68,7 +64,7 @@ def before_request():
 @app.route('/')
 def index():
     """
-    Renders the index.html template with appropriate welcome message based on the logged-in user
+    Renders the index.html template with appropriately
     """
     if g.user:
         welcome_message = gettext('logged_in_as') % {'username': g.user['name']}
