@@ -31,10 +31,10 @@ class Server:
 
         Args:
             page (int, optional): The 1-indexed page number. Defaults to 1.
-            page_size (int, optional): The number of items per page. Defaults to 10.
+            page_size (int, optional): number of items. Defaults to 10.
 
         Returns:
-            List[List]: The list of rows corresponding to the page and page size.
+            List[List]: The list of rows corresponding to the page and size.
         """
         assert isinstance(page, int) and page > 0, "page must be a positive integer"
         assert isinstance(page_size, int) and page_size > 0, "page_size must be a positive integer"
