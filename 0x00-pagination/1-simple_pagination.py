@@ -28,11 +28,9 @@ class Server:
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
         """
         Return list of rows from dataset corresponding to page and size.
-
         Args:
             page (int, optional): The 1-indexed page number. Defaults to 1.
             page_size (int, optional): number of items. Defaults to 10.
-
         Returns:
             List[List]: The list of rows corresponding to the page and size.
         """

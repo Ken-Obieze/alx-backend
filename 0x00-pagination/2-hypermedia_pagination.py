@@ -75,6 +75,7 @@ class Server:
             "total_pages": total_pages
         }
 
+
 def index_range(page: int, page_size: int) -> Tuple[int, int]:
     """
     Return tuple containing a start index and an end index.
