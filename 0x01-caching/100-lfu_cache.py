@@ -55,5 +55,6 @@ class LFUCache(BaseCaching):
 
     def update_min_frequency(self, freq):
         """ Update the minimum frequency """
-        if freq < self.min_frequency or self.min_frequency not in self.frequency:
+        if freq < self.min_frequency or \
+                self.min_frequency not in self.frequency:
             self.min_frequency = freq

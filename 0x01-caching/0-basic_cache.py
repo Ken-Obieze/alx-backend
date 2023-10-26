@@ -6,7 +6,7 @@ BaseCaching = __import__('base_caching').BaseCaching
 
 class BasicCache(BaseCaching):
     """ BasicCache class that inherits from BaseCaching """
- 
+
     def put(self, key, item):
         """ Add an item to the cache """
         if key is not None and item is not None:
