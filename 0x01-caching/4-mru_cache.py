@@ -4,7 +4,7 @@ BaseCaching = __import__('base_caching').BaseCaching
 
 
 class MRUCache(BaseCaching):
-    """ MRUCache class inherits from BaseCaching and represents a caching system """
+    """MRUCache class inherits from BaseCaching"""
 
     def __init__(self):
         """ Initialize MRUCache """
