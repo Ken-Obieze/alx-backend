@@ -6,17 +6,16 @@ from typing import List, Dict, Union, Tuple
 
 
 class Server:
-    """Server class to paginate a database of popular baby names.
-    """
+    """Server class to paginate a database of popular baby names."""
 
     DATA_FILE = "Popular_Baby_Names.csv"
 
     def __init__(self):
+        """Initilisation."""
         self.__dataset = None
 
     def dataset(self) -> List[List]:
-        """Cached dataset
-        """
+        """Cache dataset."""
         if self.__dataset is None:
             with open(self.DATA_FILE) as f:
                 reader = csv.reader(f)
@@ -26,8 +25,7 @@ class Server:
         return self.__dataset
 
     def get_page(self, page: int = 1, page_size: int = 10) -> List[List]:
-        """Return the corresponding page of the dataset for the given page
-        """
+        """Return the corresponding page of dataset for the given page."""
         assert isinstance(page, int) and \
                 page > 0, "page must be an integer greater than 0"
         assert isinstance(page_size, int) and \
@@ -41,8 +39,7 @@ class Server:
         return dataset[start:end]
 
     def get_hyper(self, page: int = 1, page_size: int = 10) -> dict:
-        """Return a dictionary containing the pagination information
-        """
+        """Return a dictionary containing the pagination information."""
         assert isinstance(page, int) and \
                 page > 0, "page must be an integer greater than 0"
         assert isinstance(page_size, int) and \
