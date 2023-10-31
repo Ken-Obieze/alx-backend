@@ -7,9 +7,18 @@ from flask_babel import Babel
 app = Flask(__name__)
 babel = Babel(app)
 
-app.config['LANGUAGES'] = ['en', 'fr']
-app.config['BABEL_DEFAULT_LOCALE'] = 'en'
-app.config['BABEL_DEFAULT_TIMEZONE'] = 'UTC'
+
+class Config(object):
+    """configuration for babel"""
+
+    LANGUAGES = ['en', 'fr']
+    BABEL_DEFAULT_LOCALE = 'en'
+    BABEL_DEFAULT_TIMEZONE = 'UTC'
+
+
+app.config.from_object(Config)
+babel.init_app(app)
+
 
 users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
